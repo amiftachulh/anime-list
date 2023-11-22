@@ -13,8 +13,8 @@ export default function Search() {
   const page = [];
   const [selectedPage, setSelectedPage] = useState(1);
 
-  if (pagination?.items.count) {
-    for (let i = 1; i <= pagination.items.count; i++) {
+  if (pagination?.last_visible_page) {
+    for (let i = 1; i <= pagination.last_visible_page; i++) {
       page.push(i);
     }
   }
@@ -79,7 +79,9 @@ export default function Search() {
           </div>
         </div>
       ))}
-      {pagination?.items.count && page.map(num => <button onClick={() => setSelectedPage(num)}>{num}</button>)}
+      <div className="flex justify-center gap-2 mt-2">
+      {pagination?.items.count && page.map(num => <button className="p-2 bg-slate-700 text-slate-100" onClick={() => setSelectedPage(num)}>{num}</button>)}
+      </div>
     </div>
   );
 }
