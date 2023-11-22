@@ -25,7 +25,10 @@ export async function getCharactersByAnimeId(id: string | undefined) {
 export async function searchAnime(q: string) {
   try {
     const res = await axios.get(`${BASE_URL}/anime?q=${q}&limit=10`);
-    return res.data.data;
+    return {
+      pagination: res.data.pagination,
+      data: res.data.data
+    };
   } catch (error) {
     console.error();
   }

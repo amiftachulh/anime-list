@@ -4,5 +4,5 @@ import { useAuth } from "../hooks/useAuth"
 export default function PublicRoutes() {
   const { user } = useAuth();
 
-  return !user ? <Outlet /> : <Navigate to="/login" replace={true} />
+  return !user ? <Outlet /> : <Navigate to="/" replace={true} />
 }

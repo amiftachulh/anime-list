@@ -1,19 +1,43 @@
 import { useEffect, useState } from "react";
 import { searchAnime } from "../utils/anime";
-import { AnimeInfo } from "../types/anime";
+import { AnimeInfo, Pagination } from "../types/anime";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { BASE_URL } from "../data/constant";
 
 export default function Search() {
   const [query, setQuery] = useState("");
   const [lastQuery, setLastQuery] = useState("");
   const [result, setResult] = useState<AnimeInfo[]>([]);
+  const [pagination, setPagination] = useState<Pagination | null>(null);
+  const page = [];
+  const [selectedPage, setSelectedPage] = useState(1);
+
+  if (pagination?.items.count) {
+    for (let i = 1; i <= pagination.items.count; i++) {
+      page.push(i);
+    }
+  }
+
+  useEffect(() => {
+    async function getAnime() {
+      try {
+        const res = await axios.get(`${BASE_URL}/anime?q=${query}&limit=10&page=${selectedPage}`);
+        setResult(res.data.data)
+      } catch (error) {
+        console.error();
+      }
+    }
+    getAnime();
+  }, [selectedPage])
 
   async function handleSubmit(event: React.FormEvent) {
     try {
       event.preventDefault();
       setLastQuery(query);
       const res = await searchAnime(query);
-      setResult(res);
+      setResult(res?.data);
+      setPagination(res?.pagination)
     } catch (error) {
       console.error(error);
     }
@@ -55,6 +79,7 @@ export default function Search() {
           </div>
         </div>
       ))}
+      {pagination?.items.count && page.map(num => <button onClick={() => setSelectedPage(num)}>{num}</button>)}
     </div>
   );
 }
